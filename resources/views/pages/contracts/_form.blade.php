@@ -55,7 +55,7 @@
                     <label class="label" for="start_date">Start Date</label>
                     <input type="date" id="start_date" name="start_date"
                            class="input @error('start_date') input-error @enderror"
-                           value="{{ old('start_date', $contract->start_date?->format('Y-m-d') ?? '') }}">
+                           value="{{ old('start_date', ($contract ?? null)?->start_date?->format('Y-m-d') ?? '') }}">
                     @error('start_date') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
                 <div>
@@ -65,7 +65,7 @@
                     </label>
                     <input type="date" id="end_date" name="end_date"
                            class="input @error('end_date') input-error @enderror"
-                           value="{{ old('end_date', $contract->end_date?->format('Y-m-d') ?? '') }}">
+                           value="{{ old('end_date', ($contract ?? null)?->end_date?->format('Y-m-d') ?? '') }}">
                     @error('end_date') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
             </div>

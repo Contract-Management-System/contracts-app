@@ -169,6 +169,41 @@ $navItems = [
 
 ---
 
+## ⚠️ Troubleshooting
+
+### `ENOENT` error when running `npm run dev`
+
+**Problem**
+
+Running `npm run dev` (Vite) fails immediately with an error like:
+
+```
+errno: -4058,
+code: 'ENOENT',
+syscall: 'open',
+path: '…\\contracts-app\\public\\hot'
+```
+
+This happens because the **Laravel Vite plugin** (`laravel-vite-plugin`) tries to write a `hot` file inside the `public/` directory at startup. The `hot` file tells Laravel that Vite's dev server is running so it can proxy asset requests to `http://localhost:5173` instead of looking for compiled files on disk.
+
+If the `public/` directory doesn't exist — for example after a fresh clone where the directory was `.gitignore`-d or never committed (since it usually only contains framework defaults like `index.php`, `robots.txt`, and `.htaccess`) — the plugin's `fs.writeFileSync()` call fails with `ENOENT` ("Error NO ENTry" / file or directory not found) because Node.js cannot create a file inside a directory that doesn't exist.
+
+**Solution**
+
+Create the missing `public/` directory manually before starting the dev server:
+
+```bash
+# From the project root
+mkdir public
+npm run dev
+```
+
+That's all that's needed. The directory can be empty — the plugin only needs it to exist so it can write the `hot` marker file. Once created, Vite will start normally and Laravel will correctly serve assets through the dev server.
+
+> **Tip:** If you see a similar `ENOENT` error pointing to a different path, the fix is usually the same — ensure the parent directory in the error path exists.
+
+---
+
 ## 🛠️ Production
 
 ```bash
